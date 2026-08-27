@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}الرئيسية{% endblock %}
+
+{% block content %}
+<div class="hero-section p-5 mb-4 rounded-3">
+    <div class="container-fluid py-3 text-center">
+        <div class="deputy-photo-frame mb-3">
+            {% if deputy_profile.photo %}
+                <img src="{{ deputy_profile.photo.url }}" alt="{{ deputy_profile.full_name }}"
+                     class="rounded-circle" width="120" height="120" style="object-fit: cover;">
+            {% else %}
+                <img src="{% static 'img/deputy-photo-placeholder.svg' %}" alt="صورة النائب"
+                     class="rounded-circle" width="120" height="120">
+            {% endif %}
+        </div>
+        <h1 class="display-6 mb-2">
+            مرحبًا بكم في بوابة مكتب {{ deputy_profile.full_name|default:"النائب عز الدين" }}
+        </h1>
+        <p class="col-lg-8 mx-auto" style="color: var(--naib-text-muted);">
+            نظام إلكتروني لتقديم الشكاوى والطلبات والاستعلامات ومتابعتها إلكترونيًا،
+            والاطلاع على أخبار ونشاطات المكتب وأرشيفه الرسمي.
+        </p>
+        <div class="d-flex justify-content-center gap-2 mt-3">
+            <a href="{% url 'requests_app:submit' %}" class="btn btn-primary btn-lg">تقديم شكوى أو طلب</a>
+            <a href="{% url 'tracking:track' %}" class="btn btn-outline-secondary btn-lg">متابعة طلب سابق</a>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-5">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">خدمات المواطنين</h5>
+                <p class="card-text text-muted">تقديم شكوى، طلب، استعلام، أو حجز موعد إلكترونيًا.</p>
+                <a href="{% url 'requests_app:submit' %}" class="stretched-link"></a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">حجز موعد</h5>
+                <p class="card-text text-muted">احجز موعدًا مع مكتب النائب مباشرة عبر الموقع.</p>
+                <a href="{% url 'appointments:request' %}" class="stretched-link"></a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">أخبار ونشاطات</h5>
+                <p class="card-text text-muted">آخر الأخبار والزيارات واللقاءات والنشاطات الميدانية.</p>
+                <a href="{% url 'citizens:news_list' %}" class="stretched-link"></a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">الأرشيف الرسمي</h5>
+                <p class="card-text text-muted">كتب رسمية، مخاطبات، بيانات، قرارات، وتقارير قابلة للبحث.</p>
+                <a href="{% url 'archive:list' %}" class="stretched-link"></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if latest_news %}
+<h2 class="h4 mb-3" style="color: var(--naib-navy);">آخر الأخبار والنشاطات</h2>
+<div class="row g-4">
+    {% for item in latest_news %}
+    <div class="col-md-4">
+        <div class="card h-100">
+            {% if item.cover_image %}
+                <img src="{{ item.cover_image.url }}" class="card-img-top" alt="{{ item.title }}" style="height: 160px; object-fit: cover;">
+            {% endif %}
+            <div class="card-body">
+                <span class="badge mb-2" style="background-color: var(--naib-gold); color: #fff;">{{ item.get_item_type_display }}</span>
+                <h5 class="card-title">{{ item.title }}</h5>
+                <p class="card-text text-muted small">{{ item.summary|default:item.body|truncatewords:20 }}</p>
+                <a href="{{ item.get_absolute_url }}" class="stretched-link"></a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

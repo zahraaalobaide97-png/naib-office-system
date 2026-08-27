@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}عن النائب{% endblock %}
+
+{% block content %}
+<div class="row g-5">
+    <div class="col-lg-4 text-center">
+        <div class="deputy-photo-frame mb-3">
+            {% if deputy_profile.photo %}
+                <img src="{{ deputy_profile.photo.url }}" alt="{{ deputy_profile.full_name }}"
+                     class="rounded-circle" width="200" height="200" style="object-fit: cover;">
+            {% else %}
+                <img src="{% static 'img/deputy-photo-placeholder.svg' %}" alt="صورة النائب"
+                     class="rounded-circle" width="200" height="200">
+            {% endif %}
+        </div>
+        <h1 class="h3 mb-1">{{ deputy_profile.full_name|default:"النائب عز الدين" }}</h1>
+        <p class="text-muted">{{ deputy_profile.title|default:"عضو مجلس النواب العراقي" }}</p>
+    </div>
+
+    <div class="col-lg-8">
+        {% if not deputy_profile %}
+        <div class="alert alert-warning">
+            لم يُضَف بروفايل النائب بعد. يمكن لمدير النظام إضافته من لوحة
+            الإدارة (Django Admin) — قسم "بروفايل النائب".
+        </div>
+        {% endif %}
+
+        {% if deputy_profile.biography %}
+        <section class="mb-4">
+            <h2 class="h5" style="color: var(--naib-navy);">السيرة الذاتية</h2>
+            <p style="white-space: pre-line;">{{ deputy_profile.biography }}</p>
+        </section>
+        {% endif %}
+
+        {% if deputy_profile.professional_background %}
+        <section class="mb-4">
+            <h2 class="h5" style="color: var(--naib-navy);">السيرة المهنية والعلمية</h2>
+            <p style="white-space: pre-line;">{{ deputy_profile.professional_background }}</p>
+        </section>
+        {% endif %}
+
+        {% if deputy_profile.parliamentary_activity %}
+        <section class="mb-4">
+            <h2 class="h5" style="color: var(--naib-navy);">النشاط النيابي</h2>
+            <p style="white-space: pre-line;">{{ deputy_profile.parliamentary_activity }}</p>
+        </section>
+        {% endif %}
+
+        {% if committees %}
+        <section>
+            <h2 class="h5 mb-3" style="color: var(--naib-navy);">اللجان والاختصاصات</h2>
+            <div class="list-group">
+                {% for committee in committees %}
+                <div class="list-group-item">
+                    <strong>{{ committee.name }}</strong>
+                    {% if committee.description %}
+                        <p class="mb-0 text-muted small mt-1">{{ committee.description }}</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

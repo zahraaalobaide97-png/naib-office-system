@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block title %}تفاصيل التحويل{% endblock %}
+
+{% block content %}
+<a href="{% url 'communications:manage_list' %}" class="btn btn-link px-0 mb-3">&rarr; الرجوع لقائمة المراسلات</a>
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="card p-4 mb-4">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div>
+                    <h1 class="h4 mb-1">{{ assignment.request.tracking_number }}</h1>
+                    <p class="text-muted small mb-0">محال إلى: {{ assignment.deputy.full_name }}</p>
+                </div>
+                <span class="badge" style="background-color: var(--naib-gold);">{{ assignment.get_status_display }}</span>
+            </div>
+            <p><strong>عنوان الطلب:</strong> {{ assignment.request.subject }}</p>
+            {% if assignment.reply_summary %}
+            <p><strong>ملخص الرد:</strong> {{ assignment.reply_summary }}</p>
+            <p class="text-muted small">وصل الرد: {{ assignment.reply_received_at|date:"Y-m-d H:i" }}</p>
+            {% endif %}
+        </div>
+
+        <div class="card p-4">
+            <h2 class="h6 mb-3" style="color: var(--naib-navy);">سجل البريد</h2>
+            {% if email_logs %}
+            <ul class="list-group list-group-flush">
+                {% for log in email_logs %}
+                <li class="list-group-item">
+                    <div class="d-flex justify-content-between">
+                        <span>{{ log.get_status_display }}</span>
+                        <span class="text-muted small">{{ log.created_at|date:"Y-m-d H:i" }}</span>
+                    </div>
+                    {% if log.error_message %}
+                        <p class="small text-danger mb-0 mt-1">{{ log.error_message }}</p>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="text-muted small mb-0">لا توجد سجلات بريد بعد.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        {% if assignment.status == "failed" %}
+        <div class="card p-4 mb-4">
+            <h2 class="h6 mb-3" style="color: var(--naib-navy);">إعادة الإرسال</h2>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="resend">
+                <button type="submit" class="btn btn-primary w-100">إعادة إرسال البريد</button>
+            </form>
+        </div>
+        {% endif %}
+
+        {% if assignment.status == "sent" %}
+        <div class="card p-4 mb-4">
+            <h2 class="h6 mb-3" style="color: var(--naib-navy);">تسجيل رد النائب الآخر</h2>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="record_reply">
+                {{ reply_form.reply_summary|add_class:"form-control mb-3" }}
+                <button type="submit" class="btn btn-primary w-100">تسجيل الرد</button>
+            </form>
+        </div>
+        {% endif %}
+
+        {% if assignment.status == "replied" or assignment.status == "followed_up" %}
+        <div class="card p-4">
+            <h2 class="h6 mb-3" style="color: var(--naib-navy);">تحديث حالة المتابعة</h2>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="change_status">
+                {{ status_form.new_status|add_class:"form-select mb-3" }}
+                <button type="submit" class="btn btn-outline-secondary w-100">تحديث</button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

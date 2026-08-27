@@ -1,0 +1,33 @@
+# البيئة الحساسة
+.env
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Virtual environment
+.venv/
+venv/
+
+# Django
+staticfiles/
+media/
+!media/.gitkeep
+protected_media/
+db.sqlite3
+
+# محرر / نظام التشغيل
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
+
+# النسخ الاحتياطية المحلية
+backups/
+*.sql
+*.dump

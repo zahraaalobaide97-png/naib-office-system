@@ -1,0 +1,36 @@
+# انسخ هذا الملف إلى .env ثم ضع القيم الحقيقية. لا تضع .env في Git إطلاقًا.
+
+# --- Django ---
+DJANGO_SECRET_KEY=CHANGE_ME_TO_A_LONG_RANDOM_SECRET_VALUE
+DJANGO_DEBUG=True
+DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1
+# مطلوبة فقط بالإنتاج (مثلًا Render): نطاق موقعك الفعلي مع https://
+# DJANGO_CSRF_TRUSTED_ORIGINS=https://your-app-name.onrender.com
+# مطلوبة فقط إن كنت تستخدم استضافة مجانية بدون Redis منفصل (راجع README)
+# CELERY_TASK_ALWAYS_EAGER=True
+
+# --- قاعدة البيانات (PostgreSQL) ---
+# صيغة: postgres://USER:PASSWORD@HOST:PORT/DB_NAME
+DATABASE_URL=postgres://naib_app_user:CHANGE_ME@127.0.0.1:5432/naib_office_db
+
+# --- Redis / Celery ---
+REDIS_URL=redis://127.0.0.1:6379/0
+
+# --- البريد الصادر (SMTP) ---
+USE_CONSOLE_EMAIL_BACKEND=True
+EMAIL_HOST=smtp.office365.com
+EMAIL_PORT=587
+EMAIL_USE_TLS=True
+EMAIL_HOST_USER=office@example.com
+EMAIL_HOST_PASSWORD=CHANGE_ME
+DEFAULT_FROM_EMAIL=office@example.com
+OFFICE_NOTIFICATION_EMAIL=office@example.com
+
+# --- صندوق الردود الواردة (Reply Inbox) ---
+INCOMING_MAIL_PROTOCOL=imap
+INCOMING_MAIL_HOST=outlook.office365.com
+INCOMING_MAIL_USER=office-replies@example.com
+INCOMING_MAIL_PASSWORD=CHANGE_ME
+
+# --- إعدادات عامة ---
+TRACKING_NUMBER_PREFIX=AZ

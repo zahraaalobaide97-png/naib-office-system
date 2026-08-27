@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}مكتب النائب{% endblock %} | نظام خدمة المواطنين</title>
+
+    <!-- Bootstrap 5 RTL -->
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css"
+    >
+    <!--
+        ملاحظة: لا يوجد هنا SRI hash لأنني لا أستطيع التحقق من قيمته الفعلية
+        بدون اتصال إنترنت مباشر أثناء التوليد. قبل الانتقال لبيئة Production
+        يُفضَّل تنزيل الملف محليًا وتقديمه عبر static (بدل CDN) أو إضافة
+        integrity hash صحيح موثّق من مصدر Bootstrap الرسمي.
+    -->
+    <link rel="stylesheet" href="{% static 'css/theme.css' %}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    {% include "includes/navbar.html" %}
+
+    <main class="container py-4">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="إغلاق"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    {% include "includes/footer.html" %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

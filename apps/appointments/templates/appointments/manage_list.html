@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}إدارة المواعيد{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-4" style="color: var(--naib-navy);">إدارة المواعيد</h1>
+
+<form method="get" class="row g-2 mb-4">
+    <div class="col-md-4">
+        <select name="status" class="form-select">
+            <option value="">كل الحالات</option>
+            {% for value, label in status_choices %}
+                <option value="{{ value }}" {% if selected_status == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100">تصفية</button>
+    </div>
+</form>
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle bg-white">
+        <thead>
+            <tr>
+                <th>المواطن</th>
+                <th>النوع</th>
+                <th>التاريخ</th>
+                <th>الوقت</th>
+                <th>الحالة</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for appt in appointments_qs %}
+            <tr>
+                <td><a href="{% url 'appointments:manage_detail' appt.pk %}">{{ appt.citizen.full_name }}</a></td>
+                <td>{{ appt.get_appointment_type_display }}</td>
+                <td>{{ appt.requested_date }}</td>
+                <td>{{ appt.requested_time }}</td>
+                <td><span class="badge" style="background-color: var(--naib-navy);">{{ appt.get_status_display }}</span></td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5" class="text-center text-muted py-4">لا توجد مواعيد.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

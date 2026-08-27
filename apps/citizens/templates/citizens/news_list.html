@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}أخبار ونشاطات{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-4" style="color: var(--naib-navy);">أخبار ونشاطات</h1>
+
+<div class="mb-4 d-flex flex-wrap gap-2">
+    <a href="{% url 'citizens:news_list' %}"
+       class="btn btn-sm {% if not selected_type %}btn-primary{% else %}btn-outline-secondary{% endif %}">الكل</a>
+    {% for value, label in type_choices %}
+        <a href="?type={{ value }}"
+           class="btn btn-sm {% if selected_type == value %}btn-primary{% else %}btn-outline-secondary{% endif %}">{{ label }}</a>
+    {% endfor %}
+</div>
+
+{% if news_items %}
+<div class="row g-4">
+    {% for item in news_items %}
+    <div class="col-md-4">
+        <div class="card h-100">
+            {% if item.cover_image %}
+                <img src="{{ item.cover_image.url }}" class="card-img-top" alt="{{ item.title }}" style="height: 160px; object-fit: cover;">
+            {% endif %}
+            <div class="card-body">
+                <span class="badge mb-2" style="background-color: var(--naib-gold); color: #fff;">{{ item.get_item_type_display }}</span>
+                <h5 class="card-title">{{ item.title }}</h5>
+                <p class="card-text text-muted small">{{ item.summary|default:item.body|truncatewords:20 }}</p>
+                <p class="text-muted small mb-0">{{ item.published_at|date:"Y-m-d" }}</p>
+                <a href="{{ item.get_absolute_url }}" class="stretched-link"></a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% if is_paginated %}
+<nav class="mt-4">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if selected_type %}&type={{ selected_type }}{% endif %}">السابق</a></li>
+        {% endif %}
+        <li class="page-item disabled"><span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span></li>
+        {% if page_obj.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}{% if selected_type %}&type={{ selected_type }}{% endif %}">التالي</a></li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+
+{% else %}
+<div class="alert alert-info">
+    لا توجد أخبار أو نشاطات منشورة حاليًا. يمكن لموظفي المكتب إضافتها من
+    لوحة الإدارة (Django Admin) — قسم "الأخبار والنشاطات".
+</div>
+{% endif %}
+{% endblock %}

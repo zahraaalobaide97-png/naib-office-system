@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block title %}تأكيد التحويل{% endblock %}
+
+{% block content %}
+<div class="mx-auto" style="max-width: 600px;">
+    <h1 class="h4 mb-4" style="color: var(--naib-navy);">تأكيد تحويل الطلب</h1>
+
+    <div class="card p-4 mb-4">
+        <p class="mb-1"><strong>الطلب:</strong> {{ citizen_request.tracking_number }} — {{ citizen_request.subject }}</p>
+        <p class="mb-0"><strong>سيُحال إلى:</strong> {{ deputy.full_name }}
+            {% if deputy.specialization %}({{ deputy.specialization }}){% endif %}
+        </p>
+    </div>
+
+    <form method="post" class="card p-4">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label class="form-label">{{ form.note.label }}</label>
+            {{ form.note|add_class:"form-control" }}
+        </div>
+        <button type="submit" class="btn btn-primary w-100">تأكيد التحويل وإرسال البريد</button>
+    </form>
+</div>
+{% endblock %}

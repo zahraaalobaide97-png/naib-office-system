@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block title %}تفاصيل الطلب {{ citizen_request.tracking_number }}{% endblock %}
+
+{% block content %}
+<a href="{% url 'requests_app:manage_list' %}" class="btn btn-link px-0 mb-3">&rarr; الرجوع لقائمة الطلبات</a>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card p-4 mb-4">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div>
+                    <h1 class="h4 mb-1">{{ citizen_request.subject }}</h1>
+                    <p class="text-muted small mb-0">
+                        {{ citizen_request.tracking_number }} — {{ citizen_request.get_request_type_display }}
+                    </p>
+                </div>
+                <span class="badge" style="background-color: var(--naib-navy);">{{ citizen_request.get_status_display }}</span>
+            </div>
+
+            <h2 class="h6" style="color: var(--naib-navy);">تفاصيل الطلب</h2>
+            <p style="white-space: pre-line;">{{ citizen_request.details }}</p>
+
+            <h2 class="h6 mt-4" style="color: var(--naib-navy);">بيانات المواطن</h2>
+            <p class="mb-1">{{ citizen_request.citizen.full_name }} — {{ citizen_request.citizen.phone }}</p>
+            <p class="text-muted small mb-0">
+                {{ citizen_request.governorate }}
+                {% if citizen_request.district %} / {{ citizen_request.district }}{% endif %}
+                {% if citizen_request.sub_district %} / {{ citizen_request.sub_district }}{% endif %}
+            </p>
+
+            {% if attachments %}
+            <h2 class="h6 mt-4" style="color: var(--naib-navy);">المرفقات</h2>
+            <ul class="list-group list-group-flush">
+                {% for att in attachments %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{ att.original_filename }}
+                    <a href="{% url 'requests_app:attachment_download' att.pk %}" class="btn btn-sm btn-outline-secondary">تحميل</a>
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+
+        <div class="card p-4">
+            <h2 class="h6 mb-3" style="color: var(--naib-navy);">مسار الطلب</h2>
+            <ul class="list-group list-group-flush">
+                {% for entry in status_history %}
+                <li class="list-group-item">
+                    <div class="d-flex justify-content-between">
+                        <span>{{ entry.get_new_status_display }}</span>
+                        <span class="text-muted small">{{ entry.created_at|date:"Y-m-d H:i" }}</span>
+                    </div>
+                    {% if entry.note %}<p class="small text-muted mb-0 mt-1">{{ entry.note }}</p>{% endif %}
+                    {% if entry.changed_by %}<p class="small text-muted mb-0">بواسطة: {{ entry.changed_by }}</p>{% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card p-4 mb-4">
+            <h2 class="h6 mb-3" style="color: var(--naib-navy);">تغيير الحالة</h2>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="change_status">
+                <div class="mb-3">
+                    {{ status_form.new_status|add_class:"form-select" }}
+                </div>
+                <div class="mb-3">
+                    {{ status_form.note|add_class:"form-control" }}
+                </div>
+                <button type="submit" class="btn btn-primary w-100">تحديث الحالة</button>
+            </form>
+        </div>
+
+        <div class="card p-4">
+            <h2 class="h6 mb-3" style="color: var(--naib-navy);">إسناد الطلب</h2>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="assign">
+                <div class="mb-3">
+                    {{ assign_form.employee|add_class:"form-select" }}
+                </div>
+                <button type="submit" class="btn btn-outline-secondary w-100">تحديث الإسناد</button>
+            </form>
+        </div>
+
+        {% if perms.requests_app.can_forward_request %}
+        <div class="card p-4 mt-4">
+            <h2 class="h6 mb-3" style="color: var(--naib-navy);">تحويل لنائب آخر</h2>
+            <p class="text-muted small">إذا كان موضوع الطلب من اختصاص نائب آخر، حوّله له مباشرة.</p>
+            <a href="{% url 'communications:forward_search' citizen_request.pk %}" class="btn btn-primary w-100">
+                تحويل الطلب
+            </a>
+        </div>
+        {% endif %}
+
+        {% if citizen_request.assignments.all %}
+        <div class="card p-4 mt-4">
+            <h2 class="h6 mb-3" style="color: var(--naib-navy);">سجل التحويلات</h2>
+            <ul class="list-group list-group-flush">
+                {% for a in citizen_request.assignments.all %}
+                <li class="list-group-item">
+                    <a href="{% url 'communications:manage_detail' a.pk %}">{{ a.deputy.full_name }}</a>
+                    <span class="badge float-start" style="background-color: var(--naib-gold);">{{ a.get_status_display }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

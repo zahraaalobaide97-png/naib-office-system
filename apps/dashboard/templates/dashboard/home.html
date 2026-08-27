@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block title %}لوحة التحكم{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-4">أهلًا، {{ request.user.get_full_name|default:request.user.username }}</h1>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="card p-3 text-center h-100">
+            <div class="small text-muted">إجمالي الطلبات</div>
+            <div class="h3 mb-0" style="color: var(--naib-navy);">{{ total_requests }}</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card p-3 text-center h-100">
+            <div class="small text-muted">طلبات جديدة</div>
+            <div class="h3 mb-0" style="color: var(--naib-navy);">{{ new_requests }}</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card p-3 text-center h-100">
+            <div class="small text-muted">شكاوى</div>
+            <div class="h3 mb-0" style="color: var(--naib-navy);">{{ complaints_count }}</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card p-3 text-center h-100">
+            <div class="small text-muted">استعلامات</div>
+            <div class="h3 mb-0" style="color: var(--naib-navy);">{{ inquiries_count }}</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card p-3 text-center h-100">
+            <div class="small text-muted">قيد المتابعة</div>
+            <div class="h3 mb-0" style="color: var(--naib-navy);">{{ in_progress_count }}</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card p-3 text-center h-100">
+            <div class="small text-muted">محوَّلة لنواب آخرين</div>
+            <div class="h3 mb-0" style="color: var(--naib-navy);">{{ forwarded_count }}</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card p-3 text-center h-100">
+            <div class="small text-muted">بانتظار الرد</div>
+            <div class="h3 mb-0" style="color: var(--naib-navy);">{{ awaiting_reply_count }}</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card p-3 text-center h-100">
+            <div class="small text-muted">مكتملة</div>
+            <div class="h3 mb-0" style="color: var(--naib-success);">{{ completed_count }}</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4">
+        <div class="card p-3 text-center h-100">
+            <div class="small text-muted">طلبات متأخرة (+7 أيام)</div>
+            <div class="h3 mb-0" style="color: var(--naib-danger);">{{ overdue_count }}</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4">
+        <div class="card p-3 text-center h-100">
+            <div class="small text-muted">عدد المراسلات (تحويلات)</div>
+            <div class="h3 mb-0" style="color: var(--naib-navy);">{{ communications_count }}</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4">
+        <div class="card p-3 text-center h-100">
+            <div class="small text-muted">مواعيد بانتظار التأكيد</div>
+            <div class="h3 mb-0" style="color: var(--naib-navy);">{{ appointments_pending_count }}</div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-lg-7">
+        <div class="card p-4">
+            <h2 class="h6 mb-3" style="color: var(--naib-navy);">توزيع الطلبات حسب الحالة</h2>
+            <div style="position: relative; height: 280px;">
+                <canvas id="statusChart" role="img" aria-label="رسم بياني يوضح عدد الطلبات في كل حالة"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="card p-4">
+            <h2 class="h6 mb-3" style="color: var(--naib-navy);">توزيع الطلبات حسب النوع</h2>
+            <div style="position: relative; height: 280px;">
+                <canvas id="typeChart" role="img" aria-label="رسم بياني يوضح عدد الشكاوى والطلبات والاستعلامات"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card p-4 mb-4">
+    <h2 class="h6 mb-3" style="color: var(--naib-navy);">آخر العمليات</h2>
+    {% if recent_history %}
+    <ul class="list-group list-group-flush">
+        {% for entry in recent_history %}
+        <li class="list-group-item d-flex justify-content-between">
+            <span>
+                <a href="{% url 'requests_app:manage_detail' entry.request.pk %}">{{ entry.request.tracking_number }}</a>
+                — {{ entry.get_new_status_display }}
+                {% if entry.changed_by %}<span class="text-muted small">بواسطة {{ entry.changed_by }}</span>{% endif %}
+            </span>
+            <span class="text-muted small">{{ entry.created_at|date:"Y-m-d H:i" }}</span>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p class="text-muted small mb-0">لا توجد عمليات مسجَّلة بعد.</p>
+    {% endif %}
+</div>
+
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">إدارة الطلبات</h5>
+                <p class="card-text text-muted">مراجعة الشكاوى والطلبات والاستعلامات وتحديث حالتها.</p>
+                <a href="{% url 'requests_app:manage_list' %}" class="stretched-link"></a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">إدارة المواعيد</h5>
+                <p class="card-text text-muted">تأكيد المواعيد، إلغاؤها، أو إعادة جدولتها.</p>
+                <a href="{% url 'appointments:manage_list' %}" class="stretched-link"></a>
+            </div>
+        </div>
+    </div>
+    {% if perms.communications.view_requestassignment %}
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">المراسلات والتحويلات</h5>
+                <p class="card-text text-muted">متابعة الطلبات المحالة للنواب الآخرين وسجل البريد.</p>
+                <a href="{% url 'communications:manage_list' %}" class="stretched-link"></a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% if request.user.is_superuser %}
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">سجلات التدقيق</h5>
+                <p class="card-text text-muted">مراجعة كل العمليات الحساسة في النظام (Super Admin فقط).</p>
+                <a href="{% url 'audit:list' %}" class="stretched-link"></a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+{% load static %}
+<script id="dashboard-data" type="application/json">
+{
+    "statusLabels": {{ status_chart_labels|safe }},
+    "statusValues": {{ status_chart_values|safe }},
+    "typeLabels": {{ type_chart_labels|safe }},
+    "typeValues": {{ type_chart_values|safe }}
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="{% static 'js/dashboard.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block title %}تفاصيل الموعد{% endblock %}
+
+{% block content %}
+<a href="{% url 'appointments:manage_list' %}" class="btn btn-link px-0 mb-3">&rarr; الرجوع لقائمة المواعيد</a>
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="card p-4">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div>
+                    <h1 class="h4 mb-1">{{ appointment.citizen.full_name }}</h1>
+                    <p class="text-muted small mb-0">{{ appointment.citizen.phone }}</p>
+                </div>
+                <span class="badge" style="background-color: var(--naib-navy);">{{ appointment.get_status_display }}</span>
+            </div>
+            <p><strong>النوع:</strong> {{ appointment.get_appointment_type_display }}</p>
+            <p><strong>التاريخ والوقت:</strong> {{ appointment.requested_date }} — {{ appointment.requested_time }}</p>
+            {% if appointment.notes %}
+            <p><strong>ملاحظات:</strong> {{ appointment.notes }}</p>
+            {% endif %}
+            {% if appointment.confirmed_by %}
+            <p class="text-muted small">أكّده: {{ appointment.confirmed_by }}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="card p-4 mb-4">
+            <h2 class="h6 mb-3" style="color: var(--naib-navy);">تغيير الحالة</h2>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="change_status">
+                {{ status_form.new_status|add_class:"form-select mb-3" }}
+                <button type="submit" class="btn btn-primary w-100">تحديث</button>
+            </form>
+        </div>
+
+        <div class="card p-4">
+            <h2 class="h6 mb-3" style="color: var(--naib-navy);">إعادة جدولة</h2>
+            <div class="alert alert-warning small py-2">
+                تنبيه: النظام لا يرسل إشعارًا تلقائيًا للمواطن حاليًا عند
+                تغيير الموعد. يُرجى الاتصال به يدويًا على
+                <strong>{{ appointment.citizen.phone }}</strong> لإبلاغه.
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="reschedule">
+                <div class="mb-3">
+                    {{ reschedule_form.requested_date|add_class:"form-control" }}
+                </div>
+                <div class="mb-3">
+                    {{ reschedule_form.requested_time|add_class:"form-control" }}
+                </div>
+                <button type="submit" class="btn btn-outline-secondary w-100">إعادة الجدولة</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

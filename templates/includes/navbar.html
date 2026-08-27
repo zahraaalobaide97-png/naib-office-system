@@ -1,0 +1,50 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-4 border-primary">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'citizens:home' %}">
+            {# مكان شعار مجلس النواب — Placeholder يرفعه المكتب من لوحة التحكم #}
+            <img src="{% static 'img/logo-placeholder.svg' %}" alt="شعار" height="36">
+            <span>مكتب النائب عز الدين</span>
+        </a>
+        <button
+            class="navbar-toggler" type="button"
+            data-bs-toggle="collapse" data-bs-target="#mainNav"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="mainNav">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 gap-2 align-items-lg-center">
+                <li class="nav-item"><a class="nav-link" href="{% url 'citizens:home' %}">الرئيسية</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'citizens:about' %}">عن النائب</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'citizens:news_list' %}">أخبار ونشاطات</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'archive:list' %}">الأرشيف</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'tracking:track' %}">متابعة طلب</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'appointments:request' %}">حجز موعد</a></li>
+                <li class="nav-item">
+                    <a class="nav-link fw-bold" href="{% url 'requests_app:submit' %}" style="color: var(--naib-gold-light) !important;">
+                        خدمات المواطنين
+                    </a>
+                </li>
+                {% if request.user.is_authenticated %}
+                <li class="nav-item"><a class="nav-link" href="{% url 'dashboard:home' %}">لوحة التحكم</a></li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'notifications:list' %}">
+                        الإشعارات
+                        {% if unread_notifications_count %}
+                            <span class="badge rounded-pill" style="background-color: var(--naib-danger);">{{ unread_notifications_count }}</span>
+                        {% endif %}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <form method="post" action="{% url 'logout' %}" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-light">خروج ({{ request.user.username }})</button>
+                    </form>
+                </li>
+                {% else %}
+                <li class="nav-item"><a class="nav-link" href="{% url 'two_factor:login' %}">دخول الموظفين</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}سجلات التدقيق{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-4" style="color: var(--naib-navy);">سجلات التدقيق</h1>
+
+<form method="get" class="row g-2 mb-4">
+    <div class="col-md-4">
+        <input type="text" name="action" class="form-control" placeholder="ابحث حسب نوع العملية..." value="{{ request.GET.action }}">
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100">بحث</button>
+    </div>
+</form>
+
+<div class="table-responsive">
+    <table class="table table-sm table-hover bg-white align-middle">
+        <thead>
+            <tr>
+                <th>العملية</th>
+                <th>المستخدم</th>
+                <th>الكائن</th>
+                <th>النتيجة</th>
+                <th>عنوان IP</th>
+                <th>التاريخ</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in logs %}
+            <tr>
+                <td>{{ log.action }}</td>
+                <td>{{ log.user|default:"—" }}</td>
+                <td>{{ log.object_type }} {{ log.object_id }}</td>
+                <td>
+                    {% if log.result == "success" %}
+                        <span class="badge" style="background-color: var(--naib-success);">نجح</span>
+                    {% else %}
+                        <span class="badge" style="background-color: var(--naib-danger);">فشل</span>
+                    {% endif %}
+                </td>
+                <td class="small text-muted">{{ log.ip_address|default:"—" }}</td>
+                <td class="small text-muted">{{ log.created_at|date:"Y-m-d H:i" }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6" class="text-center text-muted py-4">لا توجد سجلات.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if is_paginated %}
+<nav>
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">السابق</a></li>
+        {% endif %}
+        <li class="page-item disabled"><span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span></li>
+        {% if page_obj.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">التالي</a></li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+{% endblock %}

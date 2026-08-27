@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}{{ news_item.title }}{% endblock %}
+
+{% block content %}
+<article class="mx-auto" style="max-width: 800px;">
+    <span class="badge mb-2" style="background-color: var(--naib-gold); color: #fff;">
+        {{ news_item.get_item_type_display }}
+    </span>
+    <h1 class="h3 mb-2">{{ news_item.title }}</h1>
+    <p class="text-muted small mb-4">{{ news_item.published_at|date:"Y-m-d" }}</p>
+
+    {% if news_item.cover_image %}
+        <img src="{{ news_item.cover_image.url }}" alt="{{ news_item.title }}"
+             class="img-fluid rounded mb-4 border">
+    {% endif %}
+
+    <div style="white-space: pre-line;">{{ news_item.body }}</div>
+
+    {% if news_item.video_url %}
+    <div class="mt-4">
+        <a href="{{ news_item.video_url }}" target="_blank" rel="noopener" class="btn btn-outline-secondary">
+            مشاهدة الفيديو المرفق
+        </a>
+    </div>
+    {% endif %}
+
+    {% if news_item.gallery_images.all %}
+    <div class="row g-3 mt-4">
+        {% for img in news_item.gallery_images.all %}
+        <div class="col-md-4">
+            <img src="{{ img.image.url }}" alt="{{ img.caption }}" class="img-fluid rounded border">
+            {% if img.caption %}<p class="small text-muted mt-1">{{ img.caption }}</p>{% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <a href="{% url 'citizens:news_list' %}" class="btn btn-link mt-4 px-0">&rarr; الرجوع لقائمة الأخبار</a>
+</article>
+{% endblock %}

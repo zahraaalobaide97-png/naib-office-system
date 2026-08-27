@@ -1,0 +1,35 @@
+# --- الأساس ---
+Django==5.0.9
+psycopg2-binary==2.9.9
+django-environ==0.11.2
+
+# --- المهام غير المتزامنة (إرسال البريد، Reply Inbox، إشعارات المواطن) ---
+celery==5.4.0
+redis==5.0.8
+django-celery-beat==2.7.0
+django-celery-results==2.5.1
+
+# --- الأمان ---
+django-axes==6.5.2          # حماية محاولات تسجيل الدخول / Rate limiting
+django-otp==1.5.4           # 2FA/MFA
+django-two-factor-auth==1.16.0
+phonenumbers==8.13.44       # يحتاجها two_factor داخليًا حتى دون تفعيل التحقق بالهاتف فعليًا
+django-csp==3.8             # Content Security Policy Headers
+django-guardian==2.4.0      # Object-level permissions عند الحاجة
+
+# --- الواجهة ---
+django-widget-tweaks==1.5.0 # تسهيل تنسيق نماذج Bootstrap 5
+
+# --- الإنتاج ---
+gunicorn==22.0.0
+whitenoise==6.7.0           # تقديم static files بأمان وبساطة خلف Nginx
+
+# --- الاختبارات والجودة ---
+pytest==8.3.2
+pytest-django==4.8.0
+factory-boy==3.3.1
+coverage==7.6.1
+
+# --- أدوات مساعدة ---
+Pillow==10.4.0               # معالجة الصور (شعار المؤسسة/صورة النائب)
+python-dateutil==2.9.0

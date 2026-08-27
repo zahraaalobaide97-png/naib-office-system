@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}المراسلات{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-4" style="color: var(--naib-navy);">تحويلات الطلبات والمراسلات</h1>
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle bg-white">
+        <thead>
+            <tr>
+                <th>رقم الطلب</th>
+                <th>النائب المحال إليه</th>
+                <th>الحالة</th>
+                <th>الموظف المحيل</th>
+                <th>تاريخ التحويل</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for a in assignments %}
+            <tr>
+                <td><a href="{% url 'communications:manage_detail' a.pk %}">{{ a.request.tracking_number }}</a></td>
+                <td>{{ a.deputy.full_name }}</td>
+                <td><span class="badge" style="background-color: var(--naib-gold);">{{ a.get_status_display }}</span></td>
+                <td>{{ a.forwarded_by|default:"—" }}</td>
+                <td>{{ a.created_at|date:"Y-m-d H:i" }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5" class="text-center text-muted py-4">لا توجد تحويلات بعد.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

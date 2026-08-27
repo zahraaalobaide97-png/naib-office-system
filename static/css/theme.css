@@ -1,0 +1,170 @@
+/*
+   الهوية البصرية — مكتب النائب عز الدين
+   ======================================
+   التوجه: مؤسسة تشريعية رسمية عراقية — ثقة ووقار بدون فخامة زائدة.
+   - كحلي عميق (سلطة/جدّية) + نحاسي/ذهبي مطفي (ختم رسمي، وليس بريق).
+   - خلفية ورقية باردة قليلاً (وليس الكريمي الدافئ المعتاد في التصاميم
+     المولّدة تلقائيًا) لإحساس "وثيقة حكومية" لا "مجلة تسويقية".
+   - عنصر التوقيع البصري: نمط هندسي إسلامي خفيف جدًا (زخرفة نجمية) في
+     خلفية القسم الرئيسي فقط — إشارة هوية بلا مبالغة، حسب طلب العميل
+     الصريح بعدم استخدام حركات أو تصميم مبالغ فيه.
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;500;600;700&display=swap');
+
+:root {
+    /* الألوان الأساسية */
+    --naib-navy: #0f2d4d;
+    --naib-navy-dark: #0a1f38;
+    --naib-gold: #a67c27;
+    --naib-gold-light: #c9a35c;
+    --naib-bg: #f5f6f4;
+    --naib-bg-alt: #eceeea;
+    --naib-text: #1c2733;
+    --naib-text-muted: #5b6672;
+    --naib-border: #dde1e4;
+    --naib-success: #2f6f4e;
+    --naib-danger: #a4333f;
+
+    /* الطباعة */
+    --font-display: "Amiri", "Traditional Arabic", serif;
+    --font-body: "Cairo", "Segoe UI", Tahoma, Arial, sans-serif;
+}
+
+body {
+    font-family: var(--font-body);
+    background-color: var(--naib-bg);
+    color: var(--naib-text);
+}
+
+h1, h2, h3, .display-6, .navbar-brand span {
+    font-family: var(--font-display);
+    font-weight: 700;
+}
+
+/* ---------------------------------------------------------------- */
+/* شريط التنقل                                                       */
+/* ---------------------------------------------------------------- */
+.navbar {
+    background: linear-gradient(180deg, var(--naib-navy) 0%, var(--naib-navy-dark) 100%) !important;
+}
+
+.navbar .nav-link {
+    color: #dce3ea !important;
+    transition: color .15s ease;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link:focus-visible {
+    color: var(--naib-gold-light) !important;
+}
+
+.border-primary {
+    border-color: var(--naib-gold) !important;
+}
+
+/* ---------------------------------------------------------------- */
+/* الأزرار                                                            */
+/* ---------------------------------------------------------------- */
+.btn-primary {
+    background-color: var(--naib-navy);
+    border-color: var(--naib-navy);
+    font-weight: 600;
+}
+
+.btn-primary:hover,
+.btn-primary:focus-visible {
+    background-color: var(--naib-navy-dark);
+    border-color: var(--naib-navy-dark);
+}
+
+.btn-outline-secondary {
+    color: var(--naib-navy);
+    border-color: var(--naib-navy);
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--naib-navy);
+    border-color: var(--naib-navy);
+    color: #fff;
+}
+
+/* ---------------------------------------------------------------- */
+/* القسم الرئيسي (Hero) — نمط هندسي إسلامي خفيف جدًا كتوقيع بصري      */
+/* ---------------------------------------------------------------- */
+.hero-section {
+    position: relative;
+    background-color: #ffffff;
+    border: 1px solid var(--naib-border);
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: 0.05;
+    background-image:
+        linear-gradient(30deg, var(--naib-navy) 12%, transparent 12.5%, transparent 87%, var(--naib-navy) 87.5%, var(--naib-navy)),
+        linear-gradient(150deg, var(--naib-navy) 12%, transparent 12.5%, transparent 87%, var(--naib-navy) 87.5%, var(--naib-navy)),
+        linear-gradient(30deg, var(--naib-navy) 12%, transparent 12.5%, transparent 87%, var(--naib-navy) 87.5%, var(--naib-navy)),
+        linear-gradient(150deg, var(--naib-navy) 12%, transparent 12.5%, transparent 87%, var(--naib-navy) 87.5%, var(--naib-navy));
+    background-size: 46px 80px;
+    background-position: 0 0, 0 0, 23px 40px, 23px 40px;
+    pointer-events: none;
+}
+
+.hero-section > .container-fluid {
+    position: relative;
+    z-index: 1;
+}
+
+.hero-section .deputy-photo-frame {
+    padding: 4px;
+    background: linear-gradient(135deg, var(--naib-gold), var(--naib-gold-light));
+    display: inline-block;
+    border-radius: 50%;
+}
+
+.hero-section .deputy-photo-frame img {
+    display: block;
+    border: 3px solid #fff;
+}
+
+/* ---------------------------------------------------------------- */
+/* البطاقات                                                          */
+/* ---------------------------------------------------------------- */
+.card {
+    border: 1px solid var(--naib-border);
+    border-top: 3px solid var(--naib-gold);
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(15, 45, 77, 0.08);
+}
+
+.card-title {
+    color: var(--naib-navy);
+    font-family: var(--font-display);
+    font-weight: 700;
+}
+
+/* ---------------------------------------------------------------- */
+/* التذييل                                                           */
+/* ---------------------------------------------------------------- */
+footer.bg-dark {
+    background: var(--naib-navy-dark) !important;
+}
+
+/* ---------------------------------------------------------------- */
+/* إمكانية الوصول: مؤشر تركيز واضح دائمًا للتنقل بلوحة المفاتيح       */
+/* ---------------------------------------------------------------- */
+a:focus-visible,
+button:focus-visible,
+.btn:focus-visible {
+    outline: 3px solid var(--naib-gold);
+    outline-offset: 2px;
+}
+

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}الإشعارات{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-4" style="color: var(--naib-navy);">الإشعارات</h1>
+
+{% if notifications %}
+<div class="list-group">
+    {% for n in notifications %}
+    <div class="list-group-item d-flex justify-content-between align-items-start {% if not n.is_read %}bg-light{% endif %}">
+        <div>
+            <p class="mb-1 {% if not n.is_read %}fw-bold{% endif %}">{{ n.message }}</p>
+            <p class="text-muted small mb-0">{{ n.created_at|date:"Y-m-d H:i" }}</p>
+            {% if n.request %}
+                <a href="{% url 'requests_app:manage_detail' n.request.pk %}" class="small">عرض الطلب</a>
+            {% endif %}
+        </div>
+        {% if not n.is_read %}
+        <form method="post" action="{% url 'notifications:mark_read' n.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-outline-secondary">تمييز كمقروء</button>
+        </form>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p class="text-muted">لا توجد إشعارات حاليًا.</p>
+{% endif %}
+{% endblock %}
