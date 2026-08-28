@@ -129,7 +129,7 @@ class Command(BaseCommand):
           المكتب ومسؤول المراسلات، لأن هذا الأخير مسؤول تحديدًا عن
           متابعة الإيميلات والردود حسب القسم 14 من وثيقة التخطيط.
         """
-        from apps.accounts.roles import ROLE_COMMS_OFFICER, ROLE_OFFICE_MANAGER
+        from apps.accounts.roles import ROLE_COMMS_OFFICER, ROLE_EMPLOYEE, ROLE_OFFICE_MANAGER
 
         try:
             from django.contrib.contenttypes.models import ContentType
